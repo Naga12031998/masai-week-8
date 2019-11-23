@@ -1,73 +1,120 @@
-import React from 'react' 
+import React from 'react'
+
+//axios
+import Axios from 'axios'
 
 export default class Create extends React.Component {
     constructor(props) {
-      super(props);
-      this.state = {name: '',
-                    price:'',
-                    food:'',
-                   arr:[]
-                   };
-      this.handleChange = this.handleChange.bind(this);
-      this.handleChangePrice = this.handleChangePrice.bind(this);
-      this.handleChangeFood = this.handleChangeFood.bind(this);
-      this.handleSubmit = this.handleSubmit.bind(this);
+        super(props);
+        this.state = {
+            name: '',
+            price: '',
+            food: '',
+            Createdfood: []
+        };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleChangePrice = this.handleChangePrice.bind(this);
+        this.handleChangeFood = this.handleChangeFood.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
     handleChange(event) {
-      this.setState({name: event.target.value});
+        this.setState({ name: event.target.value });
     }
 
     handleChangePrice(event) {
-      this.setState({price: event.target.value});
+        this.setState({ price: event.target.value });
     }
 
     handleChangeFood(event) {
-        this.setState({food:event.target.value})
+        this.setState({ food: event.target.value })
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        const data={name:this.state.name, price:this.state.price, food:this.state.food}
-        //alert('A name was submitted: ' + this.state.value);
-        //console.log(data)
-        const ar=[]
-        ar.push(data)
-        //console.log(ar)
-        this.setState({arr:ar})
+        let userDetails = {
+            name: this.state.name,
+            food: this.state.food,
+            price: this.state.price
+        }
+        Axios.post('http://127.0.0.1:5000/create', userDetails)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => { console.log(error) })
+        this.setState({
+            name: '',
+            price: '',
+            food: ''
+        })
+    }
+
+    handleClick = (event) => {
+        event.preventDefault()
+        console.log('Clicked')
+        Axios.get('http://127.0.0.1:5000/addedfood')
+            .then(res => {
+                this.setState({
+                    Createdfood: res.data
+                })
+            })
     }
 
     render() {
-      console.log(this.state.arr);
-      return (
-        <div className="text-center">
-            <h1>Add Your Dish Here</h1>
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Name:
-                    <input type="text" value={this.state.name} onChange={this.handleChange} />
-                </label><br />
-                <label>
-                    Food:
-                    <input type="text" value={this.state.food} onChange={this.handleChangeFood} />
-                </label><br />
-                <label>
-                    Price:
-                    <input type="text" value={this.state.email} onChange={this.handleChangePrice} />
-                </label><br />
-                <button type="submit" className="btn mb-3 btn-warning" onSubmit={this.handleSubmit}>Add</button>
-            </form>
-            <div>{this.state.arr.map((val,index)=>{
-            console.log(val);
-                return(
+        return (
+            <div className="text-center mt-4">
+                <form onSubmit={this.handleSubmit}>
+                    <div className="card container" style={{width : "18rem"}}>
+                        <div className="card-body">
+                            <h5 className="card-title">Add Your food here</h5>
+                        </div>
+                        <ul className="list-group list-group-flush">
+                            <li className="list-group-item">
+                                <div className="input-group flex-nowrap">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text" id="addon-wrapping"></span>
+                                    </div>
+                                    <input type="text" value={this.state.name} onChange={this.handleChange} className="form-control" placeholder="Restaurant Name" aria-label="Username" aria-describedby="addon-wrapping"/>
+                                </div>
+                            </li>
+                            <li className="list-group-item">
+                                <div className="input-group flex-nowrap">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text" id="addon-wrapping"></span>
+                                    </div>
+                                    <input type="text" value={this.state.food} onChange={this.handleChangeFood} className="form-control" placeholder="Dish" aria-label="Username" aria-describedby="addon-wrapping"/>
+                                </div>
+                            </li>
+                            <li className="list-group-item">
+                                <div className="input-group flex-nowrap">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text" id="addon-wrapping"></span>
+                                    </div>
+                                    <input type="text" value={this.state.price} onChange={this.handleChangePrice} className="form-control" placeholder="Price" aria-label="Username" aria-describedby="addon-wrapping"/>
+                                </div>
+                            </li>
+                        </ul>
+                        <div className="card-body">
+                            <button className="btn btn-warning" onSubmit={this.handleSubmit}>Add</button>
+                            <button className="btn btn-warning ml-3" onClick={this.handleClick}>See Added food </button>
+                        </div>
+                    </div>
+                </form>
                 <div>
-                    <p>Names: {val.name}</p>
-                    <p>Dish: {val.food}</p>
-                    <p>The Price is: {val.price} /-</p>
-                    <h3>Congratulations! Your Dish Has Been Added Successfully</h3>
+                    <div>
+                        {this.state.Createdfood.map(item => {
+                            return (
+                                <div className="card container mt-5" >
+                                    <ul className="list-group list-group-flush">
+                                        <li className="list-group-item"><b>Restaurant: </b>{item.name}</li>
+                                        <li className="list-group-item"><b>Dish Name: </b>{item.food}</li>
+                                        <li className="list-group-item"><b>Alloted Price: </b>{item.price}</li>
+                                    </ul>
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
-                )})}
-           </div>
-        </div>
-    );}
+            </div>
+        );
+    }
 }
-   

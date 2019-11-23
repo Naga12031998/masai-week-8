@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Line } from 'react-chartjs-2';
 
 const initialstate = {
-  labels: ['January', 'Februry', 'March', 'April', 'May', 'June', 'July', 'August','September'],
+  labels: ['January', 'Februry', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
   datasets: [
     {
       label: '2019',
@@ -33,7 +33,7 @@ export default class LineChart extends Component {
     return (
       <div>
         <h1>Sales Report</h1>
-          <Line ref="chart" data={initialstate} />
+        <Line ref="chart" data={initialstate} />
         <h4>Months</h4>
       </div>
     );
